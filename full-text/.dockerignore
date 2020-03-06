@@ -1,0 +1,4 @@
+.*.yml
+Dockerfile
+stats
+*.conf

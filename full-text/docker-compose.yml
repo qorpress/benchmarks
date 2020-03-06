@@ -2,7 +2,18 @@
 version: "3.7"
 services:
 
+  benchmark:
+    image: qopress/benchmark-full-text:latest
+    container_name: ${NAMESPACE}-test
+    build: .
+    depends_on:
+    - elastic
+    - manticore
+    - sphinx
+    command: ["go", "test", "-v", "*.go"]
+
   elastic:
+    container_name: ${NAMESPACE}-elastic
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
     ports:
     - 9200:9200
@@ -16,22 +27,27 @@ services:
         hard: -1
     volumes:
     - elastic-data:/usr/share/elasticsearch/data
+    restart: unless-stopped
 
   manticore:
+    container_name: ${NAMESPACE}-manticore
     image: manticoresearch/manticore:3.3.0
     ports:
     - 9306:9306
     volumes:
     - ./manticore.conf:/etc/sphinxsearch/sphinx.conf
     - manticore-data:/var/lib/manticore/data
+    restart: unless-stopped
 
   sphinx:
+    container_name: ${NAMESPACE}-sphinx
     image: macbre/sphinxsearch:3.0.3
     ports:
     - 9307:9306
     volumes:
     - ./sphinx.conf:/opt/sphinx/conf/sphinx.conf
     - sphinx-data:/var/lib/sphinxsearch/data
+    restart: unless-stopped
 
 volumes:
   elastic-data:

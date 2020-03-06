@@ -136,5 +136,4 @@ func ReadElasticIds(client *elastic.Client) ([]string, error) {
 }
 
 func main() {
-
 }
